@@ -13,7 +13,7 @@ export type RootProps = ComponentProps<'div'>;
 type FileInputContextType = {
   id: string;
   files: File[];
-  onFilesSelected(files: File[]): void;
+  onFilesSelected(files: File[], multiple: boolean): void;
 };
 
 const FileInputContext = createContext({} as FileInputContextType);
@@ -23,8 +23,16 @@ export const Root = (props: RootProps) => {
 
   const [files, setFiles] = useState<File[]>([]);
 
+  const onFilesSelected = (files: File[], multiple: boolean) => {
+    if (multiple) {
+      setFiles((oldFiles) => [...oldFiles, ...files]);
+      return;
+    }
+    setFiles(files);
+  };
+
   return (
-    <FileInputContext.Provider value={{ id, files, onFilesSelected: setFiles }}>
+    <FileInputContext.Provider value={{ id, files, onFilesSelected }}>
       <div {...props}></div>
     </FileInputContext.Provider>
   );
